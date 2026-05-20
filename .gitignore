@@ -1,0 +1,25 @@
+# Build results
+bin/
+obj/
+out/
+
+# IDE
+.idea/
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Agents / AI tools
+.agents/
+
+# NuGet
+packages/
+*.nupkg
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

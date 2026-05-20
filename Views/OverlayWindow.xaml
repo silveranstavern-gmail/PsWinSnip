@@ -1,0 +1,34 @@
+<Window x:Class="PsWinSnip.Views.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:PsWinSnip.Controls"
+        xmlns:local="clr-namespace:PsWinSnip.Views"
+        Title="PsWinSnip"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Cursor="Cross">
+    <Grid x:Name="RootGrid">
+        <!-- Dark semi-transparent background with a hole for the selection -->
+        <Path x:Name="DimmedPath" Fill="#80000000" IsHitTestVisible="True" MouseLeftButtonDown="OnBackgroundClick">
+            <Path.Data>
+                <CombinedGeometry GeometryCombineMode="Exclude">
+                    <CombinedGeometry.Geometry1>
+                        <RectangleGeometry x:Name="WholeScreenGeometry"/>
+                    </CombinedGeometry.Geometry1>
+                    <CombinedGeometry.Geometry2>
+                        <RectangleGeometry x:Name="SelectionGeometry"/>
+                    </CombinedGeometry.Geometry2>
+                </CombinedGeometry>
+            </Path.Data>
+        </Path>
+
+        <Canvas x:Name="SelectionCanvas" Background="Transparent">
+            <controls:AspectRatioRect x:Name="SelectionControl" Visibility="Collapsed"/>
+            <local:FloatingToolbar x:Name="Toolbar" Visibility="Collapsed"/>
+        </Canvas>
+    </Grid>
+</Window>
