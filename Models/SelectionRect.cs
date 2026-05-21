@@ -25,9 +25,14 @@ public class SelectionRect
     {
         X = x;
         Y = y;
-        Width = width;
-        Height = height;
+        Width = Math.Max(width, MinSize);
+        Height = Math.Max(height, MinSize);
         AspectRatio = aspectRatio;
+
+        if (AspectRatio.HasValue)
+        {
+            EnforceRatio(ResizeDirection.BottomRight);
+        }
     }
 
     public void SetRatio(double? ratio)
@@ -77,26 +82,51 @@ public class SelectionRect
 
     public void Resize(double newX, double newY, double newWidth, double newHeight, ResizeDirection direction, Rect bounds, bool isCenterAnchored = false)
     {
+        double centerX = X + Width / 2;
+        double centerY = Y + Height / 2;
+
         // Apply minimum size
-        if (newWidth < MinSize)
+        newWidth = Math.Max(newWidth, MinSize);
+        newHeight = Math.Max(newHeight, MinSize);
+
+        if (AspectRatio.HasValue)
         {
-            if (direction == ResizeDirection.Left || direction == ResizeDirection.TopLeft || direction == ResizeDirection.BottomLeft)
-                newX = X + Width - MinSize;
-            newWidth = MinSize;
-        }
-        if (newHeight < MinSize)
-        {
-            if (direction == ResizeDirection.Top || direction == ResizeDirection.TopLeft || direction == ResizeDirection.TopRight)
-                newY = Y + Height - MinSize;
-            newHeight = MinSize;
+            double ratio = AspectRatio.Value;
+            if (isCenterAnchored)
+            {
+                // Simple center-anchored ratio enforcement
+                if (newWidth / newHeight > ratio) newHeight = newWidth / ratio;
+                else newWidth = newHeight * ratio;
+            }
+            else
+            {
+                // Determine anchor point based on direction
+                double anchorX = X, anchorY = Y;
+                bool anchorRight = direction == ResizeDirection.Left || direction == ResizeDirection.TopLeft || direction == ResizeDirection.BottomLeft;
+                bool anchorBottom = direction == ResizeDirection.Top || direction == ResizeDirection.TopLeft || direction == ResizeDirection.TopRight;
+
+                if (anchorRight) anchorX = X + Width;
+                if (anchorBottom) anchorY = Y + Height;
+
+                // Adjust dimensions to ratio
+                if (direction == ResizeDirection.Left || direction == ResizeDirection.Right)
+                    newHeight = newWidth / ratio;
+                else if (direction == ResizeDirection.Top || direction == ResizeDirection.Bottom)
+                    newWidth = newHeight * ratio;
+                else
+                {
+                    if (newWidth / newHeight > ratio) newHeight = newWidth / ratio;
+                    else newWidth = newHeight * ratio;
+                }
+
+                // Reposition based on anchor
+                if (anchorRight) newX = anchorX - newWidth;
+                if (anchorBottom) newY = anchorY - newHeight;
+            }
         }
 
         if (isCenterAnchored)
         {
-            // If anchoring to center, we need to adjust X and Y such that the center remains fixed
-            double centerX = X + Width / 2;
-            double centerY = Y + Height / 2;
-
             X = centerX - newWidth / 2;
             Y = centerY - newHeight / 2;
             Width = newWidth;
@@ -108,48 +138,6 @@ public class SelectionRect
             Y = newY;
             Width = newWidth;
             Height = newHeight;
-        }
-
-        if (AspectRatio.HasValue)
-        {
-            double ratio = AspectRatio.Value;
-            double anchorX = X, anchorY = Y;
-
-            if (isCenterAnchored)
-            {
-                // Simple center-anchored ratio enforcement
-                if (Width / Height > ratio) Height = Width / ratio;
-                else Width = Height * ratio;
-
-                double centerX = X + Width / 2;
-                double centerY = Y + Height / 2;
-                X = centerX - Width / 2;
-                Y = centerY - Height / 2;
-            }
-            else
-            {
-                // Determine anchor point based on direction
-                bool anchorRight = direction == ResizeDirection.Left || direction == ResizeDirection.TopLeft || direction == ResizeDirection.BottomLeft;
-                bool anchorBottom = direction == ResizeDirection.Top || direction == ResizeDirection.TopLeft || direction == ResizeDirection.TopRight;
-
-                if (anchorRight) anchorX = X + Width;
-                if (anchorBottom) anchorY = Y + Height;
-
-                // Adjust dimensions to ratio
-                if (direction == ResizeDirection.Left || direction == ResizeDirection.Right)
-                    Height = Width / ratio;
-                else if (direction == ResizeDirection.Top || direction == ResizeDirection.Bottom)
-                    Width = Height * ratio;
-                else
-                {
-                    if (Width / Height > ratio) Height = Width / ratio;
-                    else Width = Height * ratio;
-                }
-
-                // Reposition based on anchor
-                if (anchorRight) X = anchorX - Width;
-                if (anchorBottom) Y = anchorY - Height;
-            }
         }
 
         Constrain(bounds);

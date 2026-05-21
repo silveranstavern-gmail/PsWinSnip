@@ -29,19 +29,42 @@
         <Border x:Name="SelectionBorder"
                 BorderBrush="White"
                 BorderThickness="1"
-                Background="Transparent"
-                Cursor="SizeAll">
+                Background="#01FFFFFF"
+                Cursor="Hand">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="Black" Opacity="0.5"/>
             </Border.Effect>
-            
-            <Rectangle x:Name="DashedBorder" Margin="-1">
-                <Rectangle.Stroke>
-                    <SolidColorBrush Color="Black"/>
-                </Rectangle.Stroke>
-                <Rectangle.StrokeThickness>1</Rectangle.StrokeThickness>
-                <Rectangle.StrokeDashArray>4 4</Rectangle.StrokeDashArray>
-            </Rectangle>
+
+            <Grid>
+                <Grid x:Name="GuidesGrid" Visibility="Visible" Opacity="0.4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Vertical lines -->
+                    <Rectangle Grid.Column="0" Grid.RowSpan="3" Stroke="White" StrokeThickness="0.5" HorizontalAlignment="Right" Width="1" Margin="0,0,-0.5,0"/>
+                    <Rectangle Grid.Column="1" Grid.RowSpan="3" Stroke="White" StrokeThickness="0.5" HorizontalAlignment="Right" Width="1" Margin="0,0,-0.5,0"/>
+                    
+                    <!-- Horizontal lines -->
+                    <Rectangle Grid.Row="0" Grid.ColumnSpan="3" Stroke="White" StrokeThickness="0.5" VerticalAlignment="Bottom" Height="1" Margin="0,0,0,-0.5"/>
+                    <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Stroke="White" StrokeThickness="0.5" VerticalAlignment="Bottom" Height="1" Margin="0,0,0,-0.5"/>
+                </Grid>
+                
+                <Rectangle x:Name="DashedBorder" Margin="-1">
+                    <Rectangle.Stroke>
+                        <SolidColorBrush Color="Black"/>
+                    </Rectangle.Stroke>
+                    <Rectangle.StrokeThickness>1</Rectangle.StrokeThickness>
+                    <Rectangle.StrokeDashArray>4 4</Rectangle.StrokeDashArray>
+                </Rectangle>
+            </Grid>
         </Border>
 
         <!-- Dimension Label -->

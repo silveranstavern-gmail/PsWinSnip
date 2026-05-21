@@ -18,7 +18,7 @@
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| SkiaSharp | 3.119.2 | Image processing (resize, crop, JPEG encode) |
+| SkiaSharp | 3.119.2 | Image processing (crop, PNG/JPEG encode) |
 
 ## Platform
 

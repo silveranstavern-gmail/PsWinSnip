@@ -7,9 +7,7 @@ namespace PsWinSnip.Services;
 
 public class ImageProcessor
 {
-    private const int InstagramWidth = 1080;
-
-    public static SKBitmap ProcessCapture(SKBitmap fullCapture, Rect selection)
+    public static SKBitmap CropCapture(SKBitmap fullCapture, Rect selection)
     {
         // 1. Crop to selection
         SKRectI cropRect = new SKRectI(
@@ -22,28 +20,20 @@ public class ImageProcessor
         // Ensure we don't exceed full capture bounds
         cropRect = SKRectI.Intersect(cropRect, new SKRectI(0, 0, fullCapture.Width, fullCapture.Height));
 
-        using SKBitmap cropped = new SKBitmap(cropRect.Width, cropRect.Height);
-        if (!fullCapture.ExtractSubset(cropped, cropRect))
+        if (cropRect.Width <= 0 || cropRect.Height <= 0)
         {
-            // Fallback if extraction fails
             return new SKBitmap(1, 1);
         }
 
-        // 2. Resize to Instagram standard (1080px width)
-        double ratio = (double)cropped.Width / cropped.Height;
-        
-        // Snap to common ratios if very close (e.g. within 1%)
-        if (Math.Abs(ratio - 1.0) < 0.01) ratio = 1.0;
-        else if (Math.Abs(ratio - 0.8) < 0.01) ratio = 0.8; // 4:5
-        else if (Math.Abs(ratio - 0.75) < 0.01) ratio = 0.75; // 3:4
+        SKBitmap cropped = new SKBitmap(cropRect.Width, cropRect.Height);
+        if (!fullCapture.ExtractSubset(cropped, cropRect))
+        {
+            // Fallback if extraction fails
+            cropped.Dispose();
+            return new SKBitmap(1, 1);
+        }
 
-        int targetWidth = InstagramWidth;
-        int targetHeight = (int)Math.Round(InstagramWidth / ratio);
-
-        SKBitmap resized = new SKBitmap(targetWidth, targetHeight);
-        cropped.ScalePixels(resized, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None));
-        
-        return resized;
+        return cropped;
     }
 
     public static void CopyToClipboard(SKBitmap bitmap)

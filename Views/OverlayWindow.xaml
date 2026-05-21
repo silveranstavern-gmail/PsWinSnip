@@ -9,8 +9,7 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
-        ResizeMode="NoResize"
-        Cursor="Cross">
+        ResizeMode="NoResize">
     <Grid x:Name="RootGrid">
         <!-- Dark semi-transparent background with a hole for the selection -->
         <Path x:Name="DimmedPath" Fill="#80000000" IsHitTestVisible="True" MouseLeftButtonDown="OnBackgroundClick">
@@ -26,7 +25,7 @@
             </Path.Data>
         </Path>
 
-        <Canvas x:Name="SelectionCanvas" Background="Transparent">
+        <Canvas x:Name="SelectionCanvas">
             <controls:AspectRatioRect x:Name="SelectionControl" Visibility="Collapsed"/>
             <local:FloatingToolbar x:Name="Toolbar" Visibility="Collapsed"/>
         </Canvas>

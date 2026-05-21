@@ -30,6 +30,11 @@ public partial class AspectRatioRect : System.Windows.Controls.UserControl
         UpdateUI();
     }
 
+    public void SetGridVisibility(bool visible)
+    {
+        GuidesGrid.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
         _isDragging = true;
